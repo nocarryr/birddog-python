@@ -287,13 +287,17 @@ class AuthClient(ClientBase):
         return resp.text
 
     # @logger.catch
-    async def post(self, *paths, data=None, num_attempts=0):
+    async def post(self, *paths, data=None, num_attempts=0) -> str:
+        """Perform a "POST" request on the given sub paths
+
+        If ``data`` is given, it will be sent form encoded
+        """
         # if not self._logged_in:
         #     await self._login()
         assert self._logged_in
         url = self.format_url(*paths)
         session = self.get_session()
-        kw = {'cookies':self.get_login_cookies()}
+        kw = {}
         if data is not None:
             kw = {'data':data}
         resp = await session.post(url, **kw)
