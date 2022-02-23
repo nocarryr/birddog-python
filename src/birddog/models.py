@@ -3,25 +3,33 @@ from dataclasses import dataclass
 import typing as tp
 
 class OperationMode(enum.Enum):
-    encode = enum.auto()
-    decode = enum.auto()
+    """Operation Mode
+    """
+    encode = enum.auto()        #: Encode to NDI
+    decode = enum.auto()        #: Decode from NDI
 
 class AudioOutput(enum.Enum):
-    DecodeMain = enum.auto()
-    DecodeComms = enum.auto()
-    DecodeLoop = enum.auto()
+    """Source for the analog audio output
+    """
+    DecodeMain = enum.auto()    #: Main NDI audio stream
+    DecodeComms = enum.auto()   #: Comms (intercom over NDI)
+    DecodeLoop = enum.auto()    #: Loop out from the video (SDI or HDMI) input
 
 class VideoOutput(enum.Enum):
-    sdi = enum.auto()
-    hdmi = enum.auto()
-    LowLatency = enum.auto()
-    NormalMode = enum.auto()
+    """Video output selection
+    """
+    sdi = enum.auto()           #: Output SDI
+    hdmi = enum.auto()          #: Output HDMI
+    LowLatency = enum.auto()    #: (documentation is unclear)
+    NormalMode = enum.auto()    #: (documentation is unclear)
 
 @dataclass
 class AudioOutputSetup:
-    input_gain: int
-    output_gain: int
-    output_select: AudioOutput
+    """Configuration for the analog audio output
+    """
+    input_gain: int             #: Input gain in the range of 0 to 100
+    output_gain: int            #: Output gain in the range of 0 to 100
+    output_select: AudioOutput  #: The source for the analog output
 
     @classmethod
     def from_api(cls, data: tp.Dict) -> 'AudioOutputSetup':
@@ -34,9 +42,11 @@ class AudioOutputSetup:
 
 @dataclass
 class DeviceSettings:
-    operation_mode: OperationMode
-    video_output: VideoOutput
-    audio_setup: AudioOutputSetup
+    """Device settings
+    """
+    operation_mode: OperationMode   #: Operation mode
+    video_output: VideoOutput       #: Video output selection
+    audio_setup: AudioOutputSetup   #: Audio output configuration
 
     def to_form_data(self) -> tp.Dict:
         form_data = {
@@ -50,10 +60,12 @@ class DeviceSettings:
 
 @dataclass
 class NdiSource:
-    name: str
-    address: tp.Optional[str] = None
-    index: tp.Optional[int] = None
-    is_current: tp.Optional[bool] = False
+    """An NDI source detected by the device
+    """
+    name: str                               #: The source name
+    address: tp.Optional[str] = None        #: The source's IP address
+    index: tp.Optional[int] = None          #: Index of the source in the list
+    is_current: tp.Optional[bool] = False   #: Whether the source is currently selected
 
     def format(self):
         if self.is_current:
