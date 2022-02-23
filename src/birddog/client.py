@@ -16,7 +16,7 @@ class ClientBase:
 
     session: tp.Optional[httpx.AsyncClient]
     _owns_session: bool
-    _is_open: bool
+    is_open: bool
     def __init__(
         self,
         host_url: str,
@@ -29,7 +29,7 @@ class ClientBase:
         self.host_url = host_url
         self.session = session
         self._owns_session = session is None
-        self._is_open = False
+        self.is_open = False
 
     def get_session(self) -> httpx.AsyncClient:
         s = self.session
@@ -55,14 +55,14 @@ class ClientBase:
         return f'{self.host_url}/{full_path}'
 
     async def open(self):
-        self._is_open = True
+        self.is_open = True
 
     async def close(self):
         session = self.session
         if session is not None and self._owns_session:
             self.session = None
             await session.aclose()
-        self._is_open = False
+        self.is_open = False
 
     async def __aenter__(self):
         await self.open()
@@ -207,7 +207,7 @@ class ApiClient(ClientBase):
 
     async def _proxy_through_auth_client(self, method_name: str, *args):
         client = self.auth_client
-        if not client._is_open:
+        if not client.is_open:
             await client.open()
         m = getattr(client, method_name)
         if len(args):
@@ -243,7 +243,7 @@ class ApiClient(ClientBase):
         try:
             if c is not None:
                 self.auth_client = None
-                if c._is_open:
+                if c.is_open:
                     await c.close()
         finally:
             await super().close()
