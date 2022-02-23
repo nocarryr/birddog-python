@@ -8,6 +8,7 @@ birddog-python = {editable = true, extras = ["click"], path = "."}
 click = "*"
 
 [dev-packages]
+sphinx = "*"
 
 [requires]
 python_version = "3.8"
