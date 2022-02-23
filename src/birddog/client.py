@@ -345,7 +345,7 @@ class AuthClient(ClientBase):
         await self.post('videoset', data=form_data)
 
     async def set_video_output(self, video_output: models.VideoOutput):
-        settings = self.get_settings()
+        settings = await self.get_settings()
         settings.video_output = video_output
         form_data = settings.to_form_data()
         await self.post('videoset', data=form_data)
