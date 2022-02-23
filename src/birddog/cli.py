@@ -114,7 +114,7 @@ def cli_output_get(ctx):
 @click.pass_context
 def cli_output_set(ctx, mode):
     ctx.obj.call_client('set_video_output', mode)
-    click.echo(f'Video output set to "{mode.name}"')
+    click.echo(f'Video output set to "{mode}"')
 
 @cli.group()
 @click.pass_context
