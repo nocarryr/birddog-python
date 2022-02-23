@@ -235,7 +235,9 @@ class ApiClient(ClientBase):
         if self.auth_client is None:
             if self.session is None:
                 self.get_session()
-            self.auth_client = AuthClient(self.host_url, self.session)
+            self.auth_client = AuthClient(
+                host_url=self.host_url, session=self.session, api_client=self,
+            )
         await super().open()
 
     async def close(self):
